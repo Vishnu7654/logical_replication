@@ -1,0 +1,49 @@
+CREATING A CLUSTER:
+====================
+run --initdb -D C:\clu5 -U postgres(for publication)
+run --initdb -D C:\clu6 -U postgres(for subscription)
+
+CHECKING STATUS OF CLUSTER:
+==========================
+pg_ctl -D C:\clu5 start  (publication cluster) |  pg_ctl -D C:\clu6 start   (subscription cluster)
+pg_ctl -D C:\clu5 stop                         |  pg_ctl -D C:\clu6 stop
+pg_ctl -D C:\clu5 status                       |  pg_ctl -D C:\clu6 status
+
+MAKE A CONNECTION TO DB:
+============================
+psql -p 9990 -d replica -U postgres (for publication)
+psql -p 9991 -d replica -U postgres(for subscription)
+
+
+
+CREATING A DB ,TABLE,USER:(PUBLICATION)
+==========================
+create database replica;
+  create table test;
+
+CREATE ROLE reduser WITH REPLICATION LOGIN PASSWORD 'vishnu123';
+GRANT ALL PRIVILEGES ON DATABASE replica TO reduser;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to reduser;
+
+
+
+PUBLICATION :
+============
+create publication my_pub;
+
+ALTER PUBLICATION my_pub add table test;
+
+
+
+CREATING A DB ,TABLE(SUBSCRIPTION)
+==================================
+create database replica;
+  create table test;
+
+SUBSCIPTION:
+============
+CREATE SUBSCRIPTION my_sub CONNECTION 'port=9990 host=localhost password=vishnu123 dbname=replica user=reduser'PUBLICATION my_pub;
+
+
+insert...
+update....

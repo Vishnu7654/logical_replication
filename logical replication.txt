@@ -1,0 +1,45 @@
+CREATING A CLUSTER:
+====================
+run --initdb -D C:\clu3 -U postgres(for publication)
+run --initdb -D C:\clu4 -U postgres(for subscription)
+
+CHECKING STATUS OF CLUSTER:
+==========================
+pg_ctl -D C:\clu3 start  (publication cluster) |  pg_ctl -D C:\clu4 start   (subscription cluster)
+pg_ctl -D C:\clu3 stop                         |  pg_ctl -D C:\clu4 stop
+pg_ctl -D C:\clu3 status                       |  pg_ctl -D C:\clu4 status
+
+
+MAKE A CONNECTION TO DB:
+============================
+psql -p 5430 -d logreplica -U postgres (for publication)
+psql -p 5431 -d logreplica -U postgres(for subscription)
+
+
+
+CREATING A DB ,TABLE,USER:(PUBLICATION)
+==========================
+create database logreplica;
+  create table log;
+
+CREATE ROLE repuser WITH REPLICATION LOGIN PASSWORD 'secret_password';
+GRANT ALL PRIVILEGES ON DATABASE logreplica TO repuser;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to repuser;
+
+PUBLICATION :
+============
+create publication my_publ;
+
+ALTER PUBLICATION my_publ add table log;
+
+
+
+CREATING A DB ,TABLE(SUBSCRIPTION)
+==================================
+create database logreplica;
+  create table log;
+   
+
+SUBSCIPTION:
+============
+CREATE SUBSCRIPTION mysub CONNECTION 'port=5430 host=localhost password=secret_password dbname=logreplica user=repuser'PUBLICATION my_publ;
