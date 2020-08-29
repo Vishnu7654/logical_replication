@@ -1,0 +1,24 @@
+PUBLICATION:  port=9999
+==================
+create database logical;
+create table replica;
+
+CREATE ROLE goaluser WITH REPLICATION LOGIN PASSWORD 'vishnu123';
+GRANT ALL PRIVILEGES ON DATABASE logical TO goaluser;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to goaluser;
+
+
+create publication mypub;
+ALTER PUBLICATION mypub add table replica;
+
+
+
+CREATING A DB ,TABLE(SUBSCRIPTION) (port=9998)
+==================================
+create database logical;
+  create table replica;
+
+SUBSCIPTION:
+============
+CREATE SUBSCRIPTION mysub CONNECTION 'port=9999 host=localhost password=vishnu123 dbname=logical user=goaluser'PUBLICATION mypub;
+
