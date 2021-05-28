@@ -1,4 +1,4 @@
-Coordinator  Port:9990
+Coordinator  Port:9999
 ==========================
 
 CREATE EXTENSION Citus; 
